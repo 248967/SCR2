@@ -1,0 +1,25 @@
+ 'ps' w domyślnej wersji wyświetla procesy mające ten sam UID, co bieżący użytkownik, i skojarzone z terminalem na którym jest uruchomiony 'ps'.
+
+Opcja '-f' powoduje "wyjście w pełnym formacie" - wyświetlany jest także PID procesu-rodzica (PPID), % zajmowanych zasobów procesora (C) (podawane w formacie 'int', czas rozpoczęcia pracy (STIME) i nazwa właściciela (UID), terminal na którym jest uruchomiony proces, TIME - czas użycia procesora i komenda wywołania .
+
+Opcja '-l' ("długi format") F - wyświetla flagę procesu,S - kod statusu, UID - nr użytkownika w systemie, PID, PPID, C, PRI - priorytet procesu, NI - "nice" procesu, ADDR - adres pamięci procesu, SZ - użycie pamięci wirtualnej, WCHAN - adres pamięci zdarzenia, na które oczekuje proces, TTY - terminal, TIME - czas użycia procesora, CMD - komenda wywołania.
+
+Opcja '-u' pokazuje procesy danego użytkownika
+
+Opcja '-t' pokazuje procesy z danego terminala
+
+Opcja '-p' pokazuje proces o danym PID
+
+Przykładowe wywołanie 'ps':
+
+izabela@izabela-komp:~$ ps 
+  PID TTY          TIME CMD
+ 8963 pts/1    00:00:00 bash
+ 9291 pts/1    00:00:00 ps
+
+Użycie polecenia 'pgrep':
+
+izabela@izabela-komp:~$ pgrep sshd
+izabela@izabela-komp:~$ 
+
+Na moim komputerze nie był uruchomiony proces sshd.
