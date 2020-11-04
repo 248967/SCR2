@@ -1,0 +1,22 @@
+Napisałam krótki skrypt, który co sekundę wykonuje komendę 'date'. Następnie wykonałam 3 komendy w potoku:
+
+,/skrypt_zad3_248967 | cat -n | grep lis
+
+Zestaw komend generuje datę i godzinę, polecenie 'cat -n' numeruje wyświetlane wersy, a 'grep lis' filtruje wiersze z "lis"
+
+W drugim terminalu wykonałam komende:
+
+ps -t2 -l
+
+izabela@izabela-komp:~$ ps -t2 -l
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1000  9815  8800  0  80   0 -  6091 wait   pts/2    00:00:00 bash
+0 S  1000  9837  9815  0  80   0 -  3525 wait   pts/2    00:00:00 skrypt_zad3_24
+0 S  1000  9838  9815  0  80   0 -  2368 pipe_w pts/2    00:00:00 cat
+0 S  1000  9839  9815  0  80   0 -  3911 pipe_w pts/2    00:00:00 grep
+0 S  1000 10033  9837  0  80   0 -  2171 hrtime pts/2    00:00:00 sleep
+
+Jak widać procesy dla skrypt_zad3_248967, cat, grep mają wspólnego rodzica o PID 9815, czyli powłokę, w której je uruchomiłam.
+
+
+
