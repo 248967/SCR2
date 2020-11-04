@@ -1,0 +1,33 @@
+W zadaniu 2 napisałam 3 skrypty - skrypt_zad2_1 wywołuje skrypt_zad2_2, skrypt_zad2_2 wywołuje skrypt_zad2_3, a skrypt_zad2_3 co sekundę wykonuje komendę 'date'.
+
+W  drugim terminalu wywołałam komendę:
+
+ps -t0 -l
+
+root@izabela-komp:~# ps -t 6 -l
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1000  9749  9736  0  80   0 -  6103 wait   pts/6    00:00:00 bash
+0 S  1000  9899  9749  0  80   0 -  3527 wait   pts/6    00:00:00 skrypt_zad2_1
+0 S  1000  9900  9899  0  80   0 -  3527 wait   pts/6    00:00:00 skrypt_zad2_2
+0 S  1000  9901  9900  0  80   0 -  3527 wait   pts/6    00:00:00 skrypt_zad2_3
+0 S  1000 10218  9901  0  80   0 -  2173 hrtime pts/6    00:00:00 sleep
+
+
+Jak widać skrypt_zad2_1 rodzicem skrypt_zad2_2, a skrypt zad_2_2 jest rodzicem skrypt_zad2_3.
+
+
+Następnie komendą kill -9 zabiłam proces w środku hierarchi i ponownie wywołałam:
+
+ps -t0 -l
+
+root@izabela-komp:~# ps -t 6 -l
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1000  9749  9736  0  80   0 -  6103 poll_s pts/6    00:00:00 bash
+0 S  1000  9901     1  0  80   0 -  3527 wait   pts/6    00:00:00 skrypt_zad2_3
+0 S  1000 10517  9901  0  80   0 -  2173 hrtime pts/6    00:00:00 sleep
+
+
+Po zabiciu środkowego procesu (skrypt_zad2_2) pierwszy proces (skrypt_zad2_1) zamyka się, ponieważ zakończyło się polecenie, które wywołał, a ostatni proces (skrypt_zad2_3) został osierocony i jego rodzicem został proces o PID 1, czyli zgodnie z oczekiwaniami.
+
+
+
