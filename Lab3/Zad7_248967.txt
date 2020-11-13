@@ -1,0 +1,31 @@
+Za pomocą komendy:
+
+izabela@izabela-komp:~/SCR2/Lab3$ nice -10 top&
+[3] 10153
+
+puszczam proces nice w tle
+
+Za pomocą komendy:
+
+izabela@izabela-komp:~$ ps -l -t0
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1000  4196  4181  0  80   0 -  6585 poll_s pts/0    00:00:00 bash
+0 T  1000 10153  4196  0  90  10 -  8534 signal pts/0    00:00:00 top
+
+W kolumnie NI widać wartość nice, a w kolumnie PRI zmienioną wartość priorytetu.
+
+Za pomocą:
+
+izabela@izabela-komp:~/SCR2/Lab3$ renice -n 15 -p 10153
+10153 (process ID): stary priorytet 10, nowy priorytet 15
+
+zmieniam priorytet.
+
+Poniżej widać zmienioną wartość NICE i priorytetu.
+
+izabela@izabela-komp:~$ ps -l -p 10153
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 T  1000 10153  4196  0  95  15 -  8534 signal pts/0    00:00:00 top
+
+ 
+
