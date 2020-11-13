@@ -1,0 +1,35 @@
+W zadaniu szóstym za pomocą komendy:
+
+izabela@izabela-komp:~$ kill -s SIGSTOP 8865
+
+izabela@izabela-komp:~/SCR2/Lab3$ ./skrypt_zad6
+pią, 13 lis 2020, 19:10:01 CET
+...
+pią, 13 lis 2020, 19:10:35 CET
+
+[1]+  Zatrzymano              ./skrypt_zad6
+
+
+zatrzymałam proces, a następnie za pomocą komendy:
+
+izabela@izabela-komp:~$ kill -s SIGCONT 8865
+
+[1]+  Zatrzymano              ./skrypt_zad6
+izabela@izabela-komp:~/SCR2/Lab3$ pią, 13 lis 2020, 19:13:11 CET
+pią, 13 lis 2020, 19:13:12 CET
+
+Ponownie go wznowiłam.
+
+Skrót klawiszowy ctrl+Z działa w taki sam sposób jak SIGSTOP
+
+pią, 13 lis 2020, 19:20:05 CET
+^Z
+[1]+  Zatrzymano              ./skrypt_zad6
+
+
+Polecenie SIGCONT daje taki sam efekt jak bg, ponieważ wznowiony proces działa w tle.
+
+pią, 13 lis 2020, 19:17:13 CET
+^C
+izabela@izabela-komp:~/SCR2/Lab3$ pią, 13 lis 2020, 19:17:14 CET
+
