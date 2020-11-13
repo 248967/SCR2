@@ -1,0 +1,29 @@
+#!/bin/sh
+
+trap 'echo "Przechwycilem sygnal SIGHUP"' 1
+trap 'echo "Przechwycilem sygnal SIGINT"' 2
+trap 'echo "Przechwycilem sygnal SIGQUIT"' 3
+trap 'echo "Przechwycilem sygnal SIGILL"' 4
+trap 'echo "Przechwycilem sygnal SIGTRAP"' 5
+trap 'echo "Przechwycilem sygnal SIGABRT"' 6
+trap 'echo "Przechwycilem sygnal SIGBUS"' 7
+trap 'echo "Przechwycilem sygnal SIGFPE"' 8
+trap 'echo "Przechwycilem sygnal SIGKILL"' 9
+trap 'echo "Przechwycilem sygnal SIGUSR1"' 10
+trap 'echo "Przechwycilem sygnal SIGSEGV"' 11
+trap 'echo "Przechwycilem sygnal SIGUSR2"' 12
+trap 'echo "Przechwycilem sygnal SIGPIPE"' 13
+trap 'echo "Przechwycilem sygnal SIGALRM"' 14
+trap 'echo "Przechwycilem sygnal SIGTERM"' 15
+
+
+
+
+while : 
+  do 
+    date
+   sleep 1
+done
+
+
+
