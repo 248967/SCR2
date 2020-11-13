@@ -1,0 +1,49 @@
+ulimit –a - pokazuje aktualne limity.
+
+izabela@izabela-komp:~$ ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 63447
+max locked memory       (kbytes, ps
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 1024
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 63447
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+
+ulimit –u x - ustawia ilość procesów użytkownika na x (liczy wszystkie procesy użytkownika, nie tylko te otwarte w danym terminalu).
+
+
+Sprawdziłam ile mam otwartych wątków na swoim użytkowniku:
+
+izabela@izabela-komp:~$ ps -L -u izabela |wc -l
+454
+
+Ustawiłam wyższy limit:
+
+izabela@izabela-komp:~$ ulimit -u 460
+
+Wykonałam kilkakrotnie polecenie sh, aż uzyksałam komunikat:
+
+sh: 1: Cannot fork
+
+Co oznacza, że użytkownik nie może tworzyć już kolejnych procesów.
+
+Następnie napisałam skrypt_zad8 zgodnie z poleceniem. W nowym oknie ustawiłam ulimit -u 800 i uruchomiłam skrypt.
+
+izabela@izabela-komp:~/SCR2/Lab3$ ./skrypt_zad8
+pią, 13 lis 2020, 21:55:47 CET
+pią, 13 lis 2020, 21:55:48 CET
+...
+pią, 13 lis 2020, 21:58:03 CET
+./skrypt_zad8: fork: retry: Zasoby chwilowo niedostępne
+
+Po osiągnięciu limitu skrypt przestał móc tworzyć nowe procesy. Aby odzyskać kontrolę nad terminalem wystarczyło wcisnać ctrl+C.
+
