@@ -1,0 +1,93 @@
+Utworzyłam potok fifo komendą:
+
+izabela@izabela-komp:~/SCR2/Lab3$ mknod FIFO p
+
+oraz napisałam dwa skrypty: skrypt_zad4_1 (uruchamiający komendę date co sekundę) oraz skrypt_zad4_2 (uruchamiający komendę date -u co sekundę (-u to data i godzina w UTC, zmiana wprowadzona dla rozróżnienia skryptów)).
+
+Następnie w dwóch oknach uruchomiłam czytanie komendą:
+
+izabela@izabela-komp:~/SCR2/Lab3$ cat FIFO
+
+W kolejnych dwóch utworzone wcześniej na potrzeby zadania skrypty.
+
+Okno 1:
+izabela@izabela-komp:~/SCR2/Lab3$ cat FIFO
+
+pią, 13 lis 2020, 16:42:58 CET
+pią, 13 lis 2020, 16:43:00 CET
+pią, 13 lis 2020, 16:43:01 CET
+pią, 13 lis 2020, 16:43:03 CET
+pią, 13 lis 2020, 16:43:04 CET
+pią, 13 lis 2020, 16:43:07 CET
+pią, 13 lis 2020, 16:43:08 CET
+pią, 13 lis 2020, 16:43:09 CET
+pią, 13 lis 2020, 16:43:10 CET
+pią, 13 lis 2020, 16:43:14 CET
+pią, 13 lis 2020, 15:43:16 UTC
+pią, 13 lis 2020, 15:43:17 UTC
+pią, 13 lis 2020, 15:43:20 UTC
+pią, 13 lis 2020, 16:43:21 CET
+
+Okno 2:
+izabela@izabela-komp:~/SCR2/Lab3$ cat FIFO
+pią, 13 lis 2020, 16:42:55 CET
+pią, 13 lis 2020, 16:42:56 CET
+pią, 13 lis 2020, 16:42:57 CET
+pią, 13 lis 2020, 16:42:59 CET
+pią, 13 lis 2020, 16:43:02 CET
+pią, 13 lis 2020, 16:43:05 CET
+pią, 13 lis 2020, 16:43:06 CET
+pią, 13 lis 2020, 16:43:11 CET
+pią, 13 lis 2020, 15:43:12 UTC
+pią, 13 lis 2020, 16:43:12 CET
+pią, 13 lis 2020, 15:43:13 UTC
+pią, 13 lis 2020, 15:43:14 UTC
+pią, 13 lis 2020, 16:43:15 CET
+
+
+Można zaobserwować, że procesy czytające działają na zasadzie "kto pierwaszy, ten lepszy", jeśli chodzi o czytanie potoku, niezależnie od tego, czy pisze do niego proces pierwszy, czy drugi.
+
+Zatrzymanie procesów czytających z fifo nie powoduje zabicia procesów piszących. Po ponownym uruchomieniu procesów czytających (cat), widać, że procesy piszące dalej wstawiają dane do fifo.
+
+Po uruchomieniu procesy zaczynają się ponownie czytać.
+
+Z kolei zabicie obu procesów piszących powoduje zakończenie obu procesów czytających.
+
+Okno 1 (przed zabiciem procesów piszących):
+izabela@izabela-komp:~/SCR2/Lab3$ ps -t3
+  PID TTY          TIME CMD
+23598 pts/3    00:00:00 bash
+26067 pts/3    00:00:00 cat
+
+Okno 1 (po zabiciu procesów piszących):
+izabela@izabela-komp:~/SCR2/Lab3$ ps -t3
+  PID TTY          TIME CMD
+23598 pts/3    00:00:00 bash
+
+Okno 2 (przed zabiciem procesów piszących):
+izabela@izabela-komp:~/SCR2/Lab3$ ps -t4
+  PID TTY          TIME CMD
+23609 pts/4    00:00:00 bash
+26090 pts/4    00:00:00 cat
+
+Okno 2 (po zabiciu):
+izabela@izabela-komp:~/SCR2/Lab3$ ps -t4
+  PID TTY          TIME CMD
+23609 pts/4    00:00:00 bash
+
+Uruchomienie procesu piszącego do fifo bez procesu czytającego powoduje ustawienie go w statusie pipe_wait do momentu włączenia procesu czytającego.
+
+izabela@izabela-komp:~/SCR2/Lab3$ ps -l -t1
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1000 23581  4458  0  80   0 -  6057 wait   pts/1    00:00:00 bash
+1 S  1000 28472 23581  0  80   0 -  6057 pipe_w pts/1    00:00:00 bash
+
+Po uruchomieniu cat:
+izabela@izabela-komp:~/SCR2/Lab3$ ps -l -t1
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1000 23581  4458  0  80   0 -  6057 wait   pts/1    00:00:00 bash
+0 S  1000 28472 23581  0  80   0 -  3527 wait   pts/1    00:00:00 skrypt_zad4_2
+0 S  1000 28490 28472  0  80   0 -  2173 hrtime pts/1    00:00:00 sleep
+
+
+
