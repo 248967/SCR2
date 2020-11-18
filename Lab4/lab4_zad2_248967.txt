@@ -1,0 +1,31 @@
+W zadaniu 2 napisałam program zad2.c, który ma za zadanie przechwytywać sygnały SIGALRM (14 – zakończenie pracy programu), SIGTERM (15 – dalsze działanie programu), SIGUSR1 (10 – ignorowanie sygnałów przez 1000 iteracji), SIGUSR2 (12 – ignorowanie sygnału), dodatkowo wyświetlając komunikat w terminalu co program robi z danym sygnałem.
+Kill -14
+
+izabela@openhab3:~/eclipse-workspace/lab4_zad2/Debug$ ./lab4_zad2
+ Kontrola odebrania sygnału 14
+Przechwycony sygnał SIGALRM. Kończę pracę programu.
+izabela@openhab3:~/eclipse-workspace/lab4_zad2/Debug$
+
+Kill -15
+
+izabela@openhab3:~/eclipse-workspace/lab4_zad2/Debug$ ./lab4_zad2
+ Kontrola odebrania sygnału 15
+Przechwycony sygnał SIGTERM. Działam dalej.
+
+Kill -10
+
+izabela@openhab3:~/eclipse-workspace/lab4_zad2/Debug$ ./lab4_zad2
+ Kontrola odebrania sygnału 10
+Przechwycony sygnał SIGUSR1. Ignoruję sygnały przez 1000 następnych iteracji.
+ Kontrola odebrania sygnału 10
+ Kontrola odebrania sygnału 15
+ Kontrola odebrania sygnału 10
+ Kontrola odebrania sygnału 15
+ Kontrola odebrania sygnału 10
+
+Kill -12
+izabela@openhab3:~/eclipse-workspace/lab4_zad2/Debug$ ./lab4_zad2
+ Kontrola odebrania sygnału 12
+
+Jak widać, program działa poprawnie, po komendzie kill -14 następuje zakończenie działania programu, sygnały kill: -15, -10, -12 program przechwytuje i odpowiednio: działa dalej, ignoruje komendy przez 1000 iteracji, ignoruje sygnał.  
+
