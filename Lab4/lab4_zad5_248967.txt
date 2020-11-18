@@ -1,0 +1,11 @@
+Strace – śledzi wywołania systemowe. Używany jako narzędzie diagnostyczne, debugujące dla administratorów – do znajdowania problemów, które ujawniają się po uruchomieniu programu, jak również wtedy, gdy nie mamy dostępu do debugera, albo nie możemy z pomocą niego znaleźć błędu.
+Można też wykorzystywać w celach edukacyjno-poznawczych.
+
+Najważniejsze opcje:
+-o filename – zapisywanie wyniku do pliku
+-t – informacje o czasie
+-y – podaje ścieżkę związaną z deskryptorem pliku
+-w – podaje czas pomiędzy początkiem a końcem każdego wywołania
+-e – pozwala wybierać wywołania związane np. konkretnie z plikami, zarządzeniem procesami (np. fork), sygnałami, różnymi rodzaju statystykami (np. stat)
+ 
+
