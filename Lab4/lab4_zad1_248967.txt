@@ -1,0 +1,32 @@
+Na początku napisałam program zad1_1.c, który wykonuje operację i++ w nieskończonej pętli. Uruchomiłam program i komendą top sprawdziłam, w którym miejscu na liście znajduje się mój program.
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 9915 izabela   20   0    4380    744    680 R 100,0  0,0   0:24.46 lab4_zad1_1
+   11 root      20   0       0      0      0 I   0,3  0,0   0:03.90 rcu_sched
+  807 openhab   20   0 4397372 484076  27868 S   0,3 16,4   3:04.66 java
+ 9916 izabela   20   0   45432   4024   3328 R   0,3  0,1   0:00.08 top
+
+
+Jak widać zgodnie z przewidywaniami program znajduje się na szczycie listy z prawie 100% obciążeniem procesora.
+Następnie zmodyfikowałam poprzedni program (zad1_2.c) dodając komendę nanosleep.
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 9047 izabela   20   0   23900   5048   3428 S   0,0  0,2   0:00.04 bash
+ 9087 izabela   20   0  110088   5336   4320 S   0,0  0,2   0:00.00 sshd
+ 9088 izabela   20   0   13064   2184   2032 S   0,0  0,1   0:00.00 sftp-server
+ 9098 root      20   0       0      0      0 I   0,0  0,0   0:00.15 kworker/2:0-eve
+ 9108 izabela   20   0  591084  26988  21608 S   0,0  0,9   0:00.22 update-notifier
+ 9110 izabela   20   0 1336152 167900  36180 S   0,0  5,7   0:04.33 gnome-software
+ 9134 root      20   0  585668  42556  18744 S   0,0  1,4   0:00.37 fwupd
+ 9202 izabela   20   0  791248  33368  27396 S   0,0  1,1   0:00.09 deja-dup-monito
+ 9449 root      20   0       0      0      0 I   0,0  0,0   0:00.00 kworker/3:0-cgr
+ 9627 root      20   0       0      0      0 I   0,0  0,0   0:00.00 kworker/1:0-cgr
+ 9707 root      20   0       0      0      0 I   0,0  0,0   0:00.00 kworker/0:2-mm_
+ 9864 izabela   20   0   25104   4476   3028 S   0,0  0,2   0:00.15 nano
+ 9865 root      20   0       0      0      0 I   0,0  0,0   0:00.10 kworker/u8:2-fl
+ 9960 izabela   20   0    4380    792    728 S   0,0  0,0   0:00.02 lab4_zad1_2
+
+
+Dzięki temu po uruchomieniu komendy top program nie znajduje się już na szczycie listy i nieobciąża prcesora.
+Aby zwiększyć częstotliwość odświeżania do np. 0,1 sekundy do komendy top trzeba dopisać –d 0,1.
+
