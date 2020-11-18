@@ -1,0 +1,51 @@
+Celem tego zadania było zapoznanie się z narzędziami umożliwiającymi odczyt pseudosystemu plików proc w systemie Linux. Pseudosystem plików proc został sprawdzony na własnym procesie użytkownika o PID 10983 .
+
+Przykładowe pliki, które zawierają informacje o procesie:
+
+cat /proc/nr pid/stat – statustyki procesu używane przez ps
+
+izabela@openhab3:~$ cat /proc/10983/stat
+10983 (nano) S 8874 10983 8874 34817 10983 4194304 466 0 0 0 3 0 0 0 20 0 1 0 1636441 25706496 1138 18446744073709551615 94269893349376 94269893587584 140721889645776 0 0 0 0 6 134889473 1 0 0 17 3 0 0 0 0 0 94269895684816 94269895690289 94269910962176 140721889650148 140721889650174 140721889650174 140721889652718 0
+
+cat /proc/nr pid/loginuid - uid użytkownika
+
+izabela@openhab3:~$ cat /proc/10983/loginuid
+1001izabela@openhab3:~$
+
+cat /proc/nr pid/limits - limity zasobów dla procesu
+
+izabela@openhab3:~$ cat /proc/10983/limits
+Limit                     Soft Limit           Hard Limit           Units
+Max cpu time              unlimited            unlimited            seconds
+Max file size             unlimited            unlimited            bytes
+Max data size             unlimited            unlimited            bytes
+Max stack size            8388608              unlimited            bytes
+Max core file size        0                    unlimited            bytes
+Max resident set          unlimited            unlimited            bytes
+Max processes             7497                 7497                 processes
+Max open files            1024                 1048576              files
+Max locked memory         16777216             16777216             bytes
+Max address space         unlimited            unlimited            bytes
+Max file locks            unlimited            unlimited            locks
+Max pending signals       7497                 7497                 signals
+Max msgqueue size         819200               819200               bytes
+Max nice priority         0                    0
+Max realtime priority     0                    0
+Max realtime timeout      unlimited            unlimited            us
+
+cat /proc/nr pid/cmdline – linia komendy
+
+izabela@openhab3:~$ cat /proc/10983/cmdline
+nanolab4_zad3_248967.txtizabela@openhab3:~$
+
+cat /proc/nr pid/io – statystyki wejścia/wyjścia dla danego procesu
+
+izabela@openhab3:~$ cat /proc/10983/io
+rchar: 75555
+wchar: 7544
+syscr: 2688
+syscw: 397
+read_bytes: 0
+write_bytes: 8192
+cancelled_write_bytes: 4096
+
