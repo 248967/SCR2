@@ -1,0 +1,188 @@
+PODPUNKT 1
+
+
+Zgodnie z zadaniem w podpunkcie pierwszym użyłam programu hello world - zad6.c, aby przeanalizować działaniestrace. Użyłam komendy:
+
+izabela@openhab3:~/eclipse-workspace/lab4_zad6/Debug$ strace -o helloworld.txt ./lab4_zad6
+Hello World!
+
+Zawartość pliku wynikowego helloworld.txt wraz z opisem:
+
+Uruchomienie programu:
+execve("./lab4_zad6", ["./lab4_zad6"], 0x7ffdbbe057b0 /* 33 vars */) = 0
+
+Zmiana wielkości sterty programu:
+brk(NULL)                               = 0x563f64dc0000
+
+Sprawdzenie istnienia pliku
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+
+Sprawdzenie czy jest dostęp read do pliku
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+
+Otwarcie pliku:
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+
+Sprawdzenie statusu, parametrów powyżej otwartego pliku:
+fstat(3, {st_mode=S_IFREG|0644, st_size=77899, ...}) = 0
+
+Zmapowanie do pamięci read only:
+mmap(NULL, 77899, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f5cd7414000
+
+Zamknięcie pliku:
+close(3)                                = 0
+
+Sprawdzenie istnienia pliku:
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+
+Otworzenie pliku(biblioteki):
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+
+Wczytanie pliku otwartego powyżej:
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\20\35\2\0\0\0\0\0"..., 832) = 832
+
+Sprawdzenie statusu, parametrów pliku otwartego powyżej:
+fstat(3, {st_mode=S_IFREG|0755, st_size=2030928, ...}) = 0
+
+Zmapowanie pamięci 8192 bytów:
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5cd7412000
+
+Zmapowanie pamięci 4131552 bytów dla dekryptora powyżej: 
+mmap(NULL, 4131552, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f5cd6e0e000
+
+Brak możliwości modyfikacji:
+mprotect(0x7f5cd6ff5000, 2097152, PROT_NONE) = 0
+
+Mapowanie pamięci (pamięć może być odczytywana i zapisywana):
+mmap(0x7f5cd71f5000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e7000) = 0x7f5cd71f5000
+mmap(0x7f5cd71fb000, 15072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f5cd71fb000
+
+Zamknięcie pliku:
+close(3)                                = 0
+
+Ustawienie architektury dla procesu (tu 64-bitowa):
+arch_prctl(ARCH_SET_FS, 0x7f5cd74134c0) = 0
+
+Zmiana prawa dostępu od danego adresu - pamięć może być tylko odczytywana:
+mprotect(0x7f5cd71f5000, 16384, PROT_READ) = 0
+mprotect(0x563f63518000, 4096, PROT_READ) = 0
+mprotect(0x7f5cd7428000, 4096, PROT_READ) = 0
+
+Zdjęcie mapowania pamięci:
+munmap(0x7f5cd7414000, 77899)           = 0
+
+Sprawdzdzenie statusu, parametrów pliku wyżej otwartego ("1" - standardowe wyjście):
+fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 2), ...}) = 0
+
+Zmiana wielkości sterty progamu:
+brk(NULL)                               = 0x563f64dc0000
+brk(0x563f64de1000)                     = 0x563f64de1000
+
+Zapisuje bufor do deskryptora pliku (w tym wypadku "Hello World!" na standardowe wyjście)
+write(1, "Hello World!\n", 13)          = 13
+
+Zakończenie programu
+exit_group(0)                           = ?
++++ exited with 0 +++
+
+
+
+
+
+PODPUNKT 2
+
+
+
+
+Aby znaleźć pliki konfiguracyjne jakie powłoka próbuje odczytać na starcie użyłam komendy:
+
+izabela@openhab3:~/eclipse-workspace/lab4_zad6/Debug$ strace -o tracebash.txt -e trace=file bash
+
+Komenda ta powoduje zapisanie do pliku wywyłań systemowych dotyczących dostępu do pliku. Z listy trzeba wybrać te pliki które są konfiguracyjne, w szczegóności pomijając te które są komendami (np. w /usr/bin) albo bibliotekami.
+Żeby ograniczyć ilość sprawdzanych wywołań użyłam polecenia: more tracebash.txt | grep -v  bin | grep -v lib | grep -v X_OK |more
+
+Pliki konfiguracyjne otwierane przez bash to:
+
+/etc/ld.so.nohwcap 
+/etc/ld.so.preload 
+/etc/nsswitch.conf
+/etc/bash.bashrc
+/etc/debian_chroot
+/home/izabela/.dircolors/home/izabela/.bash_aliases
+/usr/share/locale/locale.alias
+/home/izabela/.inputrc
+
+
+
+która wyszukuje wywołania mające nazwę pliku jako argument.
+
+
+
+
+PODPUNKT 3
+
+
+
+Utrworzyłam plik zad6_3.txt. Następnie uruchomiłam edycję pliku pico zad6_3.txt i zapisałam do pliku tracepico.txt wywołania systemowe komendą:
+
+izabela@openhab3:~/SCR2/Lab4$ strace -o tracepico.txt pico zad6_3.txt
+
+W pliku zad6_3.txt napisałam "tekst1" zapisałam plik skrótem ctrl+S oraz "tekst2" i ponownie zapisałam, potem zamknęłam program.
+
+
+Następnie przeszukałam plik logu w poszukowaniu otwierania pliku zad6_3.txt komendą:
+
+izabela@openhab3:~/SCR2/Lab4$ more tracepico.txt | grep zad6_3.txt | grep openat
+openat(AT_FDCWD, "./.zad6_3.txt.swp", O_WRONLY|O_CREAT|O_EXCL|O_APPEND, 0666) = 3
+openat(AT_FDCWD, "/home/izabela/SCR2/Lab4/zad6_3.txt", O_RDONLY) = 3
+openat(AT_FDCWD, "/home/izabela/SCR2/Lab4/zad6_3.txt", O_WRONLY|O_CREAT|O_APPEND, 0666) = 3
+openat(AT_FDCWD, "./.zad6_3.txt.swp", O_WRONLY|O_CREAT|O_EXCL|O_APPEND, 0666) = 3
+openat(AT_FDCWD, "zad6_3.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+openat(AT_FDCWD, "./.zad6_3.txt.swp", O_WRONLY|O_CREAT|O_EXCL|O_APPEND, 0666) = 3
+openat(AT_FDCWD, "zad6_3.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+
+
+Jak widać powyżej plik jest otwierany wielokrotnie (jak również zamykany), co wskazuje na to, że nie jest cały czas otwarty.
+
+
+
+PODPUNKT 4
+
+Program tworzy poniższe desktryptory:
+
+1) Deskryptor dla pliku "/etc/ld.so.cache":
+
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=77899, ...}) = 0
+mmap(NULL, 77899, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f5cd7414000
+close(3)
+
+2) Deskryptor dla pliku "/etc/ld.so.nohwcap":
+
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\20\35\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=2030928, ...}) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5cd7412000
+mmap(NULL, 4131552, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f5cd6e0e000
+mprotect(0x7f5cd6ff5000, 2097152, PROT_NONE) = 0
+mmap(0x7f5cd71f5000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e7000) = 0x7f5cd71f5000
+mmap(0x7f5cd71fb000, 15072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f5cd71fb000
+close(3)  
+
+3)Deskryptor dla standarowego wyjścia:
+
+fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 2), ...}) = 0
+brk(NULL)                               = 0x563f64dc0000
+brk(0x563f64de1000)                     = 0x563f64de1000
+write(1, "Hello World!\n", 13)          = 13
+
+
+
+
+
+
+ 
+
+
+
