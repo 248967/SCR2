@@ -1,0 +1,30 @@
+execve("./lab4_zad7", ["./lab4_zad7"], 0x7ffe6c6047f0 /* 33 vars */) = 0
+brk(NULL)                               = 0x560d7fa44000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=77899, ...}) = 0
+mmap(NULL, 77899, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7fa42040a000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\20\35\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=2030928, ...}) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fa420408000
+mmap(NULL, 4131552, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fa41fe04000
+mprotect(0x7fa41ffeb000, 2097152, PROT_NONE) = 0
+mmap(0x7fa4201eb000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e7000) = 0x7fa4201eb000
+mmap(0x7fa4201f1000, 15072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fa4201f1000
+close(3)                                = 0
+arch_prctl(ARCH_SET_FS, 0x7fa4204094c0) = 0
+mprotect(0x7fa4201eb000, 16384, PROT_READ) = 0
+mprotect(0x560d7df27000, 4096, PROT_READ) = 0
+mprotect(0x7fa42041e000, 4096, PROT_READ) = 0
+munmap(0x7fa42040a000, 77899)           = 0
+fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 0), ...}) = 0
+brk(NULL)                               = 0x560d7fa44000
+brk(0x560d7fa65000)                     = 0x560d7fa65000
+write(1, "Witajcie moi mili ...\0\0\0\1\33\3;8\0\0\0"..., 1024) = 1024
+write(1, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 853) = 853
+--- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_MAPERR, si_addr=0x560d7dd28000} ---
++++ killed by SIGSEGV (core dumped) +++
