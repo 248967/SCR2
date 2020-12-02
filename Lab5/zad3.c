@@ -36,9 +36,12 @@ int main (int argc, char **argv)
 
 	for (int i = 1; i < argc; i++)
 	{
+	    sleep(5);	//czekaj 5 sekund
+	    printf("\n i= %d ",i);					//numer pliku - kontrola
+
 		//otwarcie pliku do czytania
 		plikwej[i-1] = fopen ( argv [i], "r");
-		if ( plikwej[i] == NULL )
+		if ( plikwej[i-1] == NULL )
 		{
 			printf ( "Brak pliku\n" );
 			return -1;
@@ -46,17 +49,24 @@ int main (int argc, char **argv)
 
 		stream_fifo = fopen(myfifo, "w");  //otworzenie fifo do zapisu
 		//czytam po kolei znaki z pliku wejściowego i zapisuje do potoku FIFO
-		while ((c = fgetc (plikwej[i])) != EOF )
+		while ((c = fgetc (plikwej[i-1])) != EOF )
 		{
 			fprintf (stream_fifo, "%c", c);
-			//fprintf (stderr, "\n %c \n", c);
+			//fprintf (stdout, "\n %c \n", c);
 		}
 
 		fclose(stream_fifo);
 
 
-		fclose(plikwej[i]);
+		fclose(plikwej[i-1]);
 	}
 
 	return 0;
 }
+
+/**********************************************************************************
+ * Program w petli odczytuje podane pliki i zapisuje je do FIFO. Przed zapisaniem
+ * każdego pliku jest 5 s przerwy. FIFO odczytuję komendą tail -f -c 5 /tmp/myfifo.
+ *  Ciekawa sprawa, że opcja -c, która powoduje odczytanie ostatnich n bytów
+ *  zadziałała tylko na pierwszy plik. Pozostałe zostały odczytane w całości.
+ */
