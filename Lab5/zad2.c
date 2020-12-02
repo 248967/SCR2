@@ -38,6 +38,14 @@ int main (int argc, char **argv)
 		//proces potomny zamknij potok do pisania, otwórz do czytania
 		close (potok[1]);
 		stream = fdopen (potok[0], "r");
+
+		//podmiana stdin procesu na potok
+		close(0);			//zamykamy stdin dla potomka
+		dup(potok[0]);		// kopiujemy fd potoku na najniższy wolny file deskryptor czyli na 0 (stdin)
+		close(potok[0]);	// dla porządku zamykamy potok[0]
+		//wywolanie programu display
+		execvp("/usr/bin/display", NULL);
+
 		fclose(stream);
 		return 0;
 	}
