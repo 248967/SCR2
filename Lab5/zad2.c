@@ -44,7 +44,8 @@ int main (int argc, char **argv)
 		dup(potok[0]);		// kopiujemy fd potoku na najniższy wolny file deskryptor czyli na 0 (stdin)
 		close(potok[0]);	// dla porządku zamykamy potok[0]
 		//wywolanie programu display
-		execvp("/usr/bin/display", NULL);
+		//execvp("/usr/bin/display","");
+		 execlp("/usr/bin/display", "display", NULL);
 
 		fclose(stream);
 		return 0;
@@ -63,7 +64,7 @@ int main (int argc, char **argv)
 			return -1;
 		}
 		//otwarcie pliku wejściowego
-		plikwej = fopen ( argv [1], "r");
+		plikwej = fopen ( argv [1], "rb");					//otwarcie w trybie binarnym
 		if ( plikwej == NULL )
 		{
 			printf ( "Brak pliku\n" );
@@ -72,7 +73,20 @@ int main (int argc, char **argv)
 
 		//zamknij potok do czytania, otwórz do pisania
 		close (potok[0]);
-		stream = fdopen (potok[1], "w");
+		stream = fdopen (potok[1], "wb");					//otwarcie potoku do czytania w trybie binarnym
+
+		// kopiowanie pliku wejściowego do potoku
+		char *copy_bufor = NULL; 						 // Wskaźnik na bufor kopiowania
+		size_t bufor_size = 30 * 1024; 					// Rozmiar bufora kopiowania (30kB)
+		size_t in = 0;  								// Liczba przeczytanych bloków
+
+		if((copy_bufor = (char *)malloc(bufor_size)) == NULL)  //alokacja pamięci na bufor do kopiowania
+			return -1;
+		while((in = fread(copy_bufor, 1, bufor_size, plikwej)) != 0) //właściwe kopiowanie - czytam z pliku do buforu, aż przeczytam wszystko
+			if(fwrite(copy_bufor, 1, in, stream) != in)				//zapisuję bufor do potoku
+				return -1;
+
+		free(copy_bufor);											//zwalniam pamięć bufora
 
 		fclose(stream);
 		fclose(plikwej);
