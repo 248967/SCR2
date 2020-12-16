@@ -28,7 +28,7 @@ int main ()
 	if (pid == (pid_t) 0)
 	{
 		//proces potomny
-		//wywolanie programu display
+		//wywolanie programu qiv
 		execlp("qiv", "qiv", "--watch", "/tmp/plikdomapowania", NULL);
 		return 0;
 	}
@@ -42,8 +42,8 @@ int main ()
 	{
 		//proces rodzic
 
-		//otwórz plik do czytania i pisania, jesli nie istnieje stwórz go, jesli istnieje obetnij go
-		fd = open("/tmp/plikdomapowania", O_RDWR | O_CREAT | O_TRUNC, (mode_t)0666);
+		//otwórz plik do czytania i pisania, jesli nie istnieje stwórz go
+		fd = open("/tmp/plikdomapowania", O_RDWR | O_CREAT, (mode_t)0666);
 		if (fd == -1)
 		{
 			fprintf (stderr, "Błąd otwarcia pliku\n");
@@ -103,14 +103,17 @@ int main ()
 				exit(EXIT_FAILURE);
 			}
 
-			printf("Debug kopiowanie do pamięci");
+			//printf("Debug kopiowanie do pamięci");
 
 			//kopiowanie pliku wejściowego do pamięci
 			int num = read(fdw, map, filesize);
-			printf ("Debug ilość bytów: %d \n", num);
+			//printf ("Debug ilość bytów: %d \n", num);
 
-
-			//msync(addr,)
+			//synchronizacja pamięci z plikiem
+			if (msync(map, filesize, MS_SYNC) == -1)
+			{
+				fprintf(stderr, "Msync nieudany\n");
+			}
 
 		}
 
