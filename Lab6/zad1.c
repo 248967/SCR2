@@ -66,10 +66,10 @@ int main (int argc, char **argv)
 			exit(EXIT_FAILURE);
 		}
 
-		printf("Debug mmap zmiana\n");
+		//printf("Debug mmap zmiana\n");
 
-		//mapowanie otwartego pliku do pamięci
-		map = mmap(0, filesize, PROT_READ, MAP_SHARED, fdw, 0);
+		//mapowanie otwartego pliku fdw do pamięci
+		map = mmap(0, filesize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 		if (map == MAP_FAILED)
 		{
 			close(fdw);
@@ -77,22 +77,23 @@ int main (int argc, char **argv)
 			exit(EXIT_FAILURE);
 		}
 
-		printf("Debug kopiowanie do pamięci");
+		//printf("Debug kopiowanie do pamięci");
 
 		//kopiowanie pliku wejściowego do pamięci
 		int num = read(fdw, map, filesize);
-		printf ("Debug ilość bytów: %d \n", num);
+		//printf ("Debug ilość bytów: %d \n", num);
 
 	}
 
-	// zwolnienie zmapowanej pamięci
-	/*if (munmap(map, FILESIZE) == -1)
+	// zwolnienie zmapowanej pamięci i zamknięcie plików - program tu teorytycznie nie wejdzie, ale zostawiam dla pewności
+	if (munmap(map, filesize) == -1)
 	{
 		printf("Błąd odmapowania pliku");
-	}*/
+	}
 
 
 	close(fd);
+	close(fdw);
 	return 0;
 
 }
