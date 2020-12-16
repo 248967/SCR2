@@ -66,6 +66,23 @@ int main (int argc, char **argv)
 			exit(EXIT_FAILURE);
 		}
 
+		printf("Debug mmap zmiana\n");
+
+		//mapowanie otwartego pliku do pamięci
+		map = mmap(0, filesize, PROT_READ, MAP_SHARED, fdw, 0);
+		if (map == MAP_FAILED)
+		{
+			close(fdw);
+			printf("Błąd mapowania pliku wejściowego\n");
+			exit(EXIT_FAILURE);
+		}
+
+		printf("Debug kopiowanie do pamięci");
+
+		//kopiowanie pliku wejściowego do pamięci
+		int num = read(fdw, map, filesize);
+		printf ("Debug ilość bytów: %d \n", num);
+
 	}
 
 	// zwolnienie zmapowanej pamięci
