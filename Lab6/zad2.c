@@ -17,87 +17,109 @@
 
 int main ()
 {
+	pid_t pid;
 	int fd, fdw;
 	int *map;
 	char filename[50]; //nazwa wczytanego pliku w pętli
 	struct stat sb;	//używane do sprawdzenia rozmiaru pliku
 	long int filesize; //zmienna do rozmiaru pliku
 
-	//otwórz plik do czytania i pisania, jesli nie istnieje stwórz go, jesli istnieje obetnij go
-	fd = open("/tmp/plikdomapowania", O_RDWR | O_CREAT | O_TRUNC, (mode_t)0666);
-	if (fd == -1)
+	pid = fork ();
+	if (pid == (pid_t) 0)
 	{
-		printf("Błąd otwarcia pliku\n");
+		//proces potomny
+		//wywolanie programu display
+		execlp("qiv", "qiv", "--watch", "/tmp/plikdomapowania", NULL);
+		return 0;
+	}
+	else if (pid < (pid_t) 0)
+	{
+		// fork nieudany
+		fprintf (stderr, "Nie udało się stworzyć procesu potomnego.\n");
 		exit(EXIT_FAILURE);
 	}
-
-	//mapowanie pliku - odczyt zapis, inicjalny rozmiar 4096
-	map = mmap(0, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-	if (map == MAP_FAILED)
+	else
 	{
-		close(fd);
-		printf("Błąd mapowania pliku\n");
-		exit(EXIT_FAILURE);
-	}
+		//proces rodzic
 
-	//głowna petla
-	while(1)
-	{
-		//otwarcie pliku podanego przez użytkownika
-		printf("Podaj nazwę pliku: ");
-		scanf("%s", filename);
-		fdw = open(filename, O_RDONLY);
-		if (fdw == -1)
+		//otwórz plik do czytania i pisania, jesli nie istnieje stwórz go, jesli istnieje obetnij go
+		fd = open("/tmp/plikdomapowania", O_RDWR | O_CREAT | O_TRUNC, (mode_t)0666);
+		if (fd == -1)
 		{
-			printf("Błąd otwarcia pliku\n");
+			fprintf (stderr, "Błąd otwarcia pliku\n");
 			exit(EXIT_FAILURE);
 		}
 
-		// sprawdzenie rozmiaru pliku
-		if (stat(filename, &sb) == -1)
-		{
-			printf("Nie udało się pobrać rozmiaru pliku\n");
-			exit(EXIT_FAILURE);
-		}
-		filesize = sb.st_size;
-
-		//zmiana wielkości pliku zmapowanego wyściowego fd
-		if (ftruncate(fd,filesize) == -1)
-		{
-			exit(EXIT_FAILURE);
-		}
-
-		//printf("Debug mmap zmiana\n");
-
-		//mapowanie otwartego pliku fd do pamięci
-		map = mmap(0, filesize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+		//mapowanie pliku - odczyt zapis, inicjalny rozmiar 4096
+		map = mmap(0, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 		if (map == MAP_FAILED)
 		{
-			close(fdw);
-			printf("Błąd mapowania pliku wejściowego\n");
+			close(fd);
+			fprintf (stderr, "Błąd mapowania pliku\n");
 			exit(EXIT_FAILURE);
 		}
 
-		//printf("Debug kopiowanie do pamięci");
+		//głowna petla
+		while(1)
+		{
+			//otwarcie pliku podanego przez użytkownika
+			printf("Podaj nazwę pliku: ");
+			scanf("%s", filename);
+			fdw = open(filename, O_RDONLY);
+			if (fdw == -1)
+			{
+				fprintf (stderr, "Błąd otwarcia pliku\n");
+				close(fd);
+				exit(EXIT_FAILURE);
+			}
 
-		//kopiowanie pliku wejściowego do pamięci
-		int num = read(fdw, map, filesize);
-		//printf ("Debug ilość bytów: %d \n", num);
+			// sprawdzenie rozmiaru pliku
+			if (stat(filename, &sb) == -1)
+			{
+				fprintf (stderr, "Nie udało się pobrać rozmiaru pliku\n");
+				close(fdw);
+				close(fd);
+				exit(EXIT_FAILURE);
+			}
+			filesize = sb.st_size;
 
-		//gets
-		//stat
-		//truncate
-		//addr=mmap
-		//fd=open()
-		//read(fd,addr)
-		//msync(addr,)
+			//zmiana wielkości pliku zmapowanego wyściowego fd
+			if (ftruncate(fd,filesize) == -1)
+			{
+				close(fdw);
+				close(fd);
+				exit(EXIT_FAILURE);
+			}
+
+			//printf("Debug mmap zmiana\n");
+
+			//mapowanie otwartego pliku fd do pamięci
+			map = mmap(0, filesize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+			if (map == MAP_FAILED)
+			{
+				fprintf (stderr, "Błąd mapowania pliku wejściowego\n");
+				close(fdw);
+				close(fd);
+				exit(EXIT_FAILURE);
+			}
+
+			printf("Debug kopiowanie do pamięci");
+
+			//kopiowanie pliku wejściowego do pamięci
+			int num = read(fdw, map, filesize);
+			printf ("Debug ilość bytów: %d \n", num);
+
+
+			//msync(addr,)
+
+		}
 
 	}
 
 	// zwolnienie zmapowanej pamięci i zamknięcie plików - program tu teorytycznie nie wejdzie, ale zostawiam dla pewności
 	if (munmap(map, filesize) == -1)
 	{
-		printf("Błąd odmapowania pliku");
+		fprintf (stderr, "Błąd odmapowania pliku");
 	}
 
 
