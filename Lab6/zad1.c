@@ -16,8 +16,11 @@
 
 int main (int argc, char **argv)
 {
-	int fd;
+	int fd, fdw;
 	int *map;
+	char filename[50]; //nazwa wczytanego pliku w pętli
+	struct stat sb;	//używane do sprawdzenia rozmiaru pliku
+	long int filesize; //zmienna do rozmiaru pliku
 
 	//otwórz plik do czytania i pisania, jesli nie istnieje stwórz go, jesli istnieje obetnij go
 	fd = open("/tmp/plikdomapowania", O_RDWR | O_CREAT | O_TRUNC, (mode_t)0666);
@@ -39,14 +42,37 @@ int main (int argc, char **argv)
 	//głowna petla
 	while(1)
 	{
+		//otwarcie pliku podanego przez użytkownika
+		printf("Podaj nazwę pliku: ");
+		scanf("%s", filename);
+		fdw = open(filename, O_RDONLY);
+		if (fdw == -1)
+		{
+			printf("Błąd otwarcia pliku\n");
+			exit(EXIT_FAILURE);
+		}
+
+		// sprawdzenie rozmiaru pliku
+		if (stat(filename, &sb) == -1)
+		{
+			printf("Nie udało się pobrać rozmiaru pliku\n");
+			exit(EXIT_FAILURE);
+		}
+		filesize = sb.st_size;
+
+		//zmiana wielkości pliku zmapowanego wyściowego fd
+		if (ftruncate(fd,filesize) == -1)
+		{
+			exit(EXIT_FAILURE);
+		}
 
 	}
 
 	// zwolnienie zmapowanej pamięci
-	if (munmap(map, FILESIZE) == -1)
+	/*if (munmap(map, FILESIZE) == -1)
 	{
 		printf("Błąd odmapowania pliku");
-	}
+	}*/
 
 
 	close(fd);
