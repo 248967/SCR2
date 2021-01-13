@@ -17,15 +17,15 @@ void *MonteCarlo(void *t)
    int i;
    long tid;
    double x,y;
-   //void *pi;
-   //double pi=0.0;
-   float pi;
-   double *wynik;
+
    int sumapunktowkolo=0;
    tid = (long)t;
+   double *pi = malloc(sizeof *pi);	//robimy wskaźnik do zwrócenia wartości z wątku,
+   //bo double nie konwertuje się do wskaźnika tak jak int i potem jest zwraca kompilator błąd przy np. printf w main
 
 
-   //printf("Thread %ld starting...\n",tid);
+
+   printf("Startuje wątek nr %ld...\n",tid);
    for (i=0; i<iloscprob; i++)
    {
 	  //inicjacja funkcji losowej
@@ -38,17 +38,12 @@ void *MonteCarlo(void *t)
     	  sumapunktowkolo++;
    }
    //pole kwadratu wynosi 1, pole koła wynosi pi*0,25, więc pi=4*ilość punktów w kole / ilość punktów w kwadracie
+   //pi=4*sumapunktowkolo/iloscprob;
+   //pi=(double)4*sumapunktowkolo/iloscprob;
+   *pi=(double)4*sumapunktowkolo/iloscprob;
 
-   pi=(double)4*sumapunktowkolo/iloscprob;
-   //pi=4;
-   wynik =&pi;
-   printf("iloscprob=%d\n",iloscprob);
-   printf("sumapunktówkolo=%d\n",sumapunktowkolo);
-   printf("Pi=%f\n",pi);
-   printf("Piadres=%f\n",wynik);
-   //*((double*)pi) = 100;
-   //pthread_exit((void*) pi);
-   pthread_exit((void*) wynik);
+   printf("Pi=%f w wątku nr %ld\n",pi,tid);
+   pthread_exit((void*) pi);
 }
 
 
@@ -58,7 +53,8 @@ int main (int argc, char *argv[])
    pthread_attr_t attr;
    int rc;
    long t;
-   void *status;
+   //void *status;
+   double liczbapi;
 
    /* Initialize and set thread detached attribute */
    pthread_attr_init(&attr);
@@ -78,15 +74,14 @@ int main (int argc, char *argv[])
    for(t=0; t<NUM_THREADS; t++)
    {
       //kod zakończenia wątku thread[t] jest umieszczany w status
-	  rc = pthread_join(thread[t], &status);
+	  rc = pthread_join(thread[t], (void*) &liczbapi);
       if (rc) {
          printf("ERROR; return code from pthread_join() is %d\n", rc);
          exit(-1);
          }
-      printf("Main: completed join with thread %ld having a status of %ld\n",t,(long)status);
+      printf("Main: completed join with thread %ld having a score of %f\n",t,liczbapi);
      }
 
 printf("Main: program completed. Exiting.\n");
 pthread_exit(NULL);
 }
-
