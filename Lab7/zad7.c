@@ -10,26 +10,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define NUM_THREADS	4
-#define ilosciteracji 100
+#define iloscprob 100
 
 void *MonteCarlo(void *t)
 {
    int i;
    long tid;
-   double result=0.0;
-   int sumakwadrat=0;
-   int sumakolo=0;
+   double x,y;
+   //void *pi;
+   //double pi=0.0;
+   float pi;
+   double *wynik;
+   int sumapunktowkolo=0;
    tid = (long)t;
 
 
    //printf("Thread %ld starting...\n",tid);
-   for (i=0; i<1000000; i++)
+   for (i=0; i<iloscprob; i++)
    {
-      //result = result + sin(i) * tan(i);
+	  //inicjacja funkcji losowej
+	  srand48(time(0));
+	  x = drand48();
+      y = drand48();
+
+      //czy punkt należy do koła o środku (0,5;0,5) i promieniu 0,5
+      if ( (x-0.5)*(x-0.5)+(y-0.5)*(y-0.5) <= (0.5*0.5) )
+    	  sumapunktowkolo++;
    }
-   //printf("Thread %ld done. Result = %e\n",tid, result);
-   pthread_exit((void*) t);
+   //pole kwadratu wynosi 1, pole koła wynosi pi*0,25, więc pi=4*ilość punktów w kole / ilość punktów w kwadracie
+
+   pi=(double)4*sumapunktowkolo/iloscprob;
+   //pi=4;
+   wynik =&pi;
+   printf("iloscprob=%d\n",iloscprob);
+   printf("sumapunktówkolo=%d\n",sumapunktowkolo);
+   printf("Pi=%f\n",pi);
+   printf("Piadres=%f\n",wynik);
+   //*((double*)pi) = 100;
+   //pthread_exit((void*) pi);
+   pthread_exit((void*) wynik);
 }
+
 
 int main (int argc, char *argv[])
 {
